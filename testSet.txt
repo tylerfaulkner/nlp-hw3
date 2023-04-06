@@ -1,0 +1,8 @@
+NEU The program does what it should do.
+NEU It functions adequately.
+NEG The program sucks.
+NEG This thing runs like a pregnant cow.
+NEU It was a little slow, but not too bad.
+NEG Slow. Slow. SLOW!
+POS Great software!
+NEU Worth the trouble to install.
