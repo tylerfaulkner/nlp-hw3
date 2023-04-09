@@ -1,0 +1,6 @@
+NEG The new computer sucks.
+NEG The program is so frustrating.
+POS My laptop is awesome!
+POS I love this food.
+NEU It works fine.
+NEU This app is ok.
