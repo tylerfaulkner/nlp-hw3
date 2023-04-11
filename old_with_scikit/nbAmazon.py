@@ -1,45 +1,48 @@
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn import metrics
 import numpy as np
-
-# Create a Gaussian Naive Bayes classifier
-clf = MultinomialNB()
+import os
 
 # Load the training data
-raw_training_data = open('trainingSet.txt', 'r').readlines()
+print('Loading training data...')
+data_file = '/media/faulknert/Storage/Amazon Reviews/train_data.txt'
+label_file = '/media/faulknert/Storage/Amazon Reviews/train_labels.txt'
 
-#Load the additional training data
-raw_additional_training_data = open('trainingSetAdditional.txt', 'r').readlines()
-
-#Append additonal test data to original data
-raw_training_data = raw_training_data + raw_additional_training_data
-
+input_type = 'content'
+raw_training_data = open('/media/faulknert/Storage/Amazon Reviews/train.ft.txt', 'r').readlines()
 # Split the labels from the text
 labels = [x.split(' ', 1)[0] for x in raw_training_data]
-training_data = [x.split(' ', 1)[1][:-1] for x in raw_training_data]
+raw_training_data = [x.split(' ', 1)[1][:-1] for x in raw_training_data]
+
 
 # Load the test data
-raw_test_data = open('testSet.txt', 'r').readlines()
+print('Loading test data...')
+raw_test_data = open('/media/faulknert/Storage/Amazon Reviews/test.ft.txt', 'r').readlines()
 test_labels = [x.split(' ', 1)[0] for x in raw_test_data]
 test_data = [x.split(' ', 1)[1][:-1] for x in raw_test_data]
 
 #print(test_data)
 
 #Bag of words
-from sklearn.feature_extraction.text import CountVectorizer
-vectorizer = CountVectorizer()
-training_data = vectorizer.fit_transform(training_data)
-
-# Add-1 smoothing
-training_data = training_data.toarray()
-training_data = training_data + 1
+print('Creating bag of words...')
+vectorizer = HashingVectorizer(input=input_type, n_features=2**24, decode_error='ignore', alternate_sign=False)
+print('Fitting vectorizer...')
+vectorizer.fit(raw_training_data)
+print('Transforming training data...')
+training_data = vectorizer.transform(raw_training_data)
 
 # Fit the classifier to the training data
+print('Fitting classifier...')
+# Create a Naive Bayes classifier
+clf = MultinomialNB(force_alpha=True)
 clf.fit(training_data, labels)
 
 # Predict the labels of the test data
 # Convert the test data to a bag of words
-test_counts = vectorizer.transform(test_data).toarray()
+test_counts = vectorizer.transform(test_data)
+print('Predicting labels...')
 preds = clf.predict(test_counts)
 
 i = 0

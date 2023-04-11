@@ -3,17 +3,20 @@ from sklearn import metrics
 import numpy as np
 
 # Create a Gaussian Naive Bayes classifier
-clf = MultinomialNB()
+clf = MultinomialNB(force_alpha=True)
 
 # Load the training data
 raw_training_data = open('trainingSet.txt', 'r').readlines()
 
+#Load the additional training data
+raw_additional_training_data = open('trainingSetAdditional.txt', 'r').readlines()
+
+#Append additonal test data to original data
+raw_training_data = raw_training_data + raw_additional_training_data
+
 # Split the labels from the text
 labels = [x.split(' ', 1)[0] for x in raw_training_data]
 training_data = [x.split(' ', 1)[1][:-1] for x in raw_training_data]
-
-#print(labels)
-#print(training_data)
 
 # Load the test data
 raw_test_data = open('testSet.txt', 'r').readlines()
@@ -26,10 +29,6 @@ test_data = [x.split(' ', 1)[1][:-1] for x in raw_test_data]
 from sklearn.feature_extraction.text import CountVectorizer
 vectorizer = CountVectorizer()
 training_data = vectorizer.fit_transform(training_data)
-
-# Add-1 smoothing
-training_data = training_data.toarray()
-training_data = training_data + 1
 
 # Fit the classifier to the training data
 clf.fit(training_data, labels)
